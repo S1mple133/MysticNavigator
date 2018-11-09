@@ -1,13 +1,17 @@
 # MysticNavigator
+
 Minecraft Hub Plugin
 
 ## Getting Started
+
 This Plugin allows you to set some GameModes up. Every GameMode has its Arenas and players can choose which arena they want to be teleported to.
 
 ### Dependencies
+
 MysticNavigator does not have any dependencies.
 
 ## Permissions and Commands
+
 <Argument> is a must. [Argument] is optional.
 ```
 /mn help : Display help
@@ -32,12 +36,18 @@ MysticNavigator does not have any dependencies.
 ```
 
 ### Installing
+
+Latest stable build: https://github.com/gitmc15q/MysticNavigator/blob/master/target/MysticNavigator-1.0-SNAPSHOT.jar
+```
 Download the .jar file and put it in your server's "plugins" folder.
+```
 
 ### Authors
+
 I am the only Author at the moment.
 
 ### About Me
+
 Discord: S1mple#8051
 ```
 If you need any self developed plugins I might be able to code them. PM me.
@@ -52,5 +62,6 @@ If you're interested visit our website at http://turpster.xyz/wackster .
 
 
 ## Licence
+
 You are not allowed to share edited Versions of this code and / or compiled .jar Files.
 
