@@ -12,8 +12,8 @@ MysticNavigator does not have any dependencies.
 
 ## Permissions and Commands
 
-<Argument> is a must. [Argument] is optional.
 ```
+<Argument> is a must. [Argument] is optional.
 /mn help : Display help
 /mn add <GameMode> : Create a new GameMode 
 /mn remove <GameMode> : Remove a GameMode (mn.remove)
