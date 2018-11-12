@@ -14,20 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameMode {
-    private String name;
-    private MysticNavigator plugin;
-    private String dataFolder;
+    final private String name;
+    final private MysticNavigator plugin;
+    final private String dataFolder;
 
     /**
      * Initialize a new Game Mode
+     *
      * @param gameModeName The name of the gamemode
-     * @param pl The MysticNavigator plugin
-     * @param dataFolder The data folder of the plugin
+     * @param pl           The MysticNavigator plugin
+     * @param dataFolder   The data folder of the plugin
      **/
     public GameMode(String gameModeName, MysticNavigator pl, String dataFolder) {
-        this.name=gameModeName;
+        this.name = gameModeName;
         this.plugin = pl;
-        this.dataFolder=dataFolder;
+        this.dataFolder = dataFolder;
         List<String> gameModes = (List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES);
 
         String sql = "CREATE TABLE IF NOT EXISTS " + getName() + " (\n"
@@ -39,13 +40,13 @@ public class GameMode {
                 + "	world text"
                 + ");";
 
-        if(!gameModes.contains(getName())) {
+        if (!gameModes.contains(getName())) {
             gameModes.add(getName());
             plugin.getConfigFile().set(plugin.getConfigFile().GAME_MODES, gameModes); // Add GameMode to Config
         }
 
-        try(Connection conn = pl.getUtil().getDatabase(dataFolder);
-            Statement state = conn.createStatement()) {
+        try (Connection conn = pl.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
             state.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,17 +54,17 @@ public class GameMode {
     }
 
     /**
-     * @return  Number of spawn points.
+     * @return Number of spawn points.
      */
     public int getSpawnPlaces() {
-        int i=0;
+        int i = 0;
         String sql = "SELECT id FROM " + getName();
 
-        try(Connection conn = plugin.getUtil().getDatabase(dataFolder);
-            Statement state = conn.createStatement()) {
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
             ResultSet rs = state.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 i++;
             }
 
@@ -77,18 +78,18 @@ public class GameMode {
 
 
     /**
-     * @return  SpawnPointsNames as a String List.
+     * @return SpawnPointsNames as a String List.
      */
     public List<String> getSpawnPointsNames() {
         ResultSet rs;
         List<String> spawnPoints = new ArrayList<>();
         String sql = "SELECT name from " + getName();
 
-        try(Connection conn = plugin.getUtil().getDatabase(dataFolder);
-            Statement state = conn.createStatement()) {
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
             rs = state.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 spawnPoints.add(rs.getString("name"));
             }
 
@@ -102,9 +103,10 @@ public class GameMode {
 
     /**
      * Set a spawnpoint
-     * @param loc Location of spawnpoint
+     *
+     * @param loc  Location of spawnpoint
      * @param name Name of spawnpoint
-     * @return Weather the spawnPoint has been saved or not.
+     * @return Wether the spawnPoint has been saved or not.
      */
     public boolean setSpawnPoint(Location loc, String name) {
         String sql = "INSERT INTO " + getName() + "(world,x,y,z,name) VALUES(?,?,?,?,?)";
@@ -114,8 +116,7 @@ public class GameMode {
         Double z = loc.getZ();
 
         // Return false if spawnpoint exists
-        if(hasSpawnPoint(loc))
-        {
+        if (hasSpawnPoint(loc)) {
             return false;
         }
 
@@ -136,8 +137,9 @@ public class GameMode {
 
     /**
      * Change spawn point
+     *
      * @param locNew New location
-     * @param name Name of old SpawnPoint
+     * @param name   Name of old SpawnPoint
      */
     public void changeSpawnPoint(Location locNew, String name) {
         String sql = "UPDATE " + getName() + " SET world = ? , "
@@ -167,21 +169,22 @@ public class GameMode {
 
     /**
      * Returns the id of a spawn point.
+     *
      * @param loc Location of spawnpoint
      * @return Spawn point´s id as an int
      */
     public int getId(Location loc) {
-        int id=0;
+        int id;
         String world = loc.getWorld().getName();
         Double x = loc.getX();
         Double y = loc.getY();
         Double z = loc.getZ();
-        String sql = "SELECT id FROM " + getName() + " where x=" + x + " AND world=" + world + " AND y=" + y + " AND z=" + z +";\n";
+        String sql = "SELECT id FROM " + getName() + " where x=" + x + " AND world=" + world + " AND y=" + y + " AND z=" + z + ";\n";
 
-        try(Connection conn = plugin.getUtil().getDatabase(dataFolder);
-            Statement state = conn.createStatement()) {
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
             ResultSet rs = state.executeQuery(sql);
-            id=rs.getInt("id");
+            id = rs.getInt("id");
             rs.close();
 
             return id;
@@ -193,17 +196,18 @@ public class GameMode {
 
     /**
      * Returns the id of a spawn point.
-     * @param  spawnPointName Name of SpawnPoint
+     *
+     * @param spawnPointName Name of SpawnPoint
      * @return Spawn point´s id as an int
      */
     public int getId(String spawnPointName) {
-        int id=0;
-        String sql = "SELECT id FROM " + getName() + " where name='" + spawnPointName.toLowerCase()  + "';\n";
+        int id;
+        String sql = "SELECT id FROM " + getName() + " where name='" + spawnPointName.toLowerCase() + "';\n";
 
-        try(Connection conn = plugin.getUtil().getDatabase(dataFolder);
-            Statement state = conn.createStatement()) {
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
             ResultSet rs = state.executeQuery(sql);
-            id=rs.getInt("id");
+            id = rs.getInt("id");
             rs.close();
 
             return id;
@@ -215,6 +219,7 @@ public class GameMode {
 
     /**
      * Get location of a spawn point.
+     *
      * @param spawnPoint Name of the spawn point
      * @return Location of Spawnpoint, null if it does not exist
      */
@@ -225,10 +230,9 @@ public class GameMode {
         try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
              Statement state = conn.createStatement()) {
             ResultSet rs = state.executeQuery(sql);
-            loc=new Location(plugin.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"));
+            loc = new Location(plugin.getServer().getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"));
             rs.close();
-        }
-        catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -237,6 +241,7 @@ public class GameMode {
 
     /**
      * Get location of a spawn point.
+     *
      * @param id Id of the spawn point
      * @return Location of Spawnpoint, null if it does not exist
      */
@@ -251,16 +256,15 @@ public class GameMode {
         try (Connection conn = plugin.getUtil().getDatabase(dataFolder)) {
             ResultSet rs = conn.createStatement().executeQuery(sql);
 
-            world=rs.getString("world");
-            x=rs.getDouble("x");
-            y=rs.getDouble("y");
-            z=rs.getDouble("z");
+            world = rs.getString("world");
+            x = rs.getDouble("x");
+            y = rs.getDouble("y");
+            z = rs.getDouble("z");
             rs.close();
 
-            loc=new Location(plugin.getServer().getWorld(world), x, y, z);
-        }
-        catch(SQLException e) {
-            loc=null;
+            loc = new Location(plugin.getServer().getWorld(world), x, y, z);
+        } catch (SQLException e) {
+            loc = null;
             e.printStackTrace();
         }
 
@@ -276,6 +280,7 @@ public class GameMode {
 
     /**
      * Deletes a spawnpoint.
+     *
      * @param name Name of Spawn point
      */
     public void deleteSpawnPoint(String name) {
@@ -303,7 +308,7 @@ public class GameMode {
             pstate.executeUpdate();
 
 
-            if(gameModes.contains(getName())) {
+            if (gameModes.contains(getName())) {
                 gameModes.remove(getName());
                 plugin.getConfigFile().set(plugin.getConfigFile().GAME_MODES, gameModes); // Remove GameMode from config
             }
@@ -317,11 +322,11 @@ public class GameMode {
 
     /**
      * @param name Name of SpawnPoint
-     * @return Weather if spawnpoint exists or not;
+     * @return Wether if spawnpoint exists or not;
      */
     public boolean hasSpawnPoint(String name) {
-        for(String arena : getSpawnPointsNames()) {
-            if(arena.equalsIgnoreCase(name)) {
+        for (String arena : getSpawnPointsNames()) {
+            if (arena.equalsIgnoreCase(name)) {
                 return true;
             }
         }
@@ -330,19 +335,16 @@ public class GameMode {
 
     /**
      * @param loc Location of SpawnPoint
-     * @return Weather if spawnpoint exists or not;
+     * @return Wether if spawnpoint exists or not;
      */
     public boolean hasSpawnPoint(Location loc) {
-        for(String arena : getSpawnPointsNames()) {
-            if(getSpawnPointLocation(arena) == loc) {
+        for (String arena : getSpawnPointsNames()) {
+            if (getSpawnPointLocation(arena) == loc) {
                 return true;
             }
         }
 
         return false;
     }
-
-
-
 
 }

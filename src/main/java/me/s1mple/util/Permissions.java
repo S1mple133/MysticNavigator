@@ -4,25 +4,22 @@ import org.bukkit.entity.Player;
 
 public enum Permissions {
     MN_ADD("mn.add"),
-    MN_REMOVE("mn.add"),
-    MN_SETSPAWN("mn.add"),
-    MN_ADDARENA("mn.add"),
-    MN_JOIN("mn.add"),
-    MN_LEAVE("mn.add"),
-    MN_ARENAS("mn.add"),
-    MN_REMOVEARENA("mn.add");
+    MN_REMOVE("mn.remove"),
+    MN_SETSPAWN("mn.setspawn"),
+    MN_ADDARENA("mn.addarena"),
+    MN_JOIN("mn.join"),
+    MN_LEAVE("mn.leave"),
+    MN_ARENAS("mn.arenas"),
+    MN_REMOVEARENA("mn.removearenas");
 
     private final String perm;
 
     Permissions(final String perm) {
-        this.perm=perm;
+        this.perm = perm;
     }
 
     public boolean hasPerm(Player player) {
-        if(player.hasPermission(perm)) {
-            return true;
-        }
-        return false;
+        return player.hasPermission(perm);
     }
 
 

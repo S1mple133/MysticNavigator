@@ -7,11 +7,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 
 public class Config {
-    MysticNavigator plugin;
-    FileConfiguration config;
-
-    final public String DEFAULT_LOCATION= "MysticNavigator.DefaultSpawnpoint";
-    final public String GAME_MODES="MysticNavigator.GameModes";
+    final public String DEFAULT_LOCATION = "MysticNavigator.DefaultSpawnpoint";
+    final public String GAME_MODES = "MysticNavigator.GameModes";
+    final private MysticNavigator plugin;
+    final private FileConfiguration config;
 
     public Config(MysticNavigator plugin) {
         this.plugin = plugin;
