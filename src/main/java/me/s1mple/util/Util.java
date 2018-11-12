@@ -92,10 +92,7 @@ public class Util {
      * @return If the file has been copied.
      */
     public boolean backupDatabase(String dataFolder) {
-        File dataBase = new File(getDbFileName(dataFolder));
-        File dataBackup = new File(getDbFileName(dataFolder + "_Backup" + System.currentTimeMillis()));
-
-        return FileUtil.copy(dataBackup, dataBase);
+        return FileUtil.copy((new File(getDbFileName(dataFolder + "_Backup" + System.currentTimeMillis()))), (new File(getDbFileName(dataFolder))));
     }
 
     /**
@@ -114,6 +111,7 @@ public class Util {
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Join <GameMode> [Arena]: " + ChatColor.AQUA + " Teleport to the Default Spawn of <GameMode> or to " +
                 String.format("%80s", "<Arena> \n") +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Leave : " + ChatColor.AQUA + " Teleport yourself to the Hub \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Backup : " + ChatColor.AQUA + " Back the DataBase up. \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Arenas <GameMode> : " + ChatColor.AQUA + " List Arenas of <GameMode>\n" +
                 ChatColor.DARK_BLUE + "----------------------------------------------";
     }

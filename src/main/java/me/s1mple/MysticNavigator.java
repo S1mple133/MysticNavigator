@@ -95,6 +95,24 @@ public class MysticNavigator extends JavaPlugin {
                     player.sendMessage(ChatColor.GREEN + "Spawn was successfully set!");
                 }
 
+                // /mn backup
+                else if(args[0].equalsIgnoreCase("backup")) {
+
+                    //Check for permissions
+                    if(!Permissions.MN_BACKUP.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
+                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
+                        return false;
+                    }
+
+                    try {
+                        getUtil().backupDatabase(dataFolder); //Back the database up
+                        player.sendMessage(ChatColor.GREEN + "Database was successfully backupped.");
+                    }
+                    catch(Exception ex) {
+                        player.sendMessage(ChatColor.RED + "Database was not backuped.");
+                    }
+                }
+
                 // /mn leave
                 else if (args[0].equalsIgnoreCase("leave")) {
                     if (!Permissions.MN_LEAVE.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
@@ -322,11 +340,8 @@ public class MysticNavigator extends JavaPlugin {
     /**
      * @return Weather if a Game Mode exists or not.
      */
-    public boolean hasGameModes() {
-        for (GameMode g : getGameModes()) {
-            return true;
-        }
-        return false;
+    public boolean existGameModes() {
+        return (getGameModes().isEmpty()) ? false : true;
     }
 
     /**
@@ -343,15 +358,13 @@ public class MysticNavigator extends JavaPlugin {
      */
     public void initializeGameModes() {
         // Check if there are any GameModes
-        if ((getUtil().getGameModes(dataFolder) == null)) {
+        if ((getUtil().getGameModes(dataFolder) == null))
             return;
-        }
 
         // Initialize GameModes
         for (String gameMode : getUtil().getGameModes(dataFolder)) {
-            if (!gameModes.contains(new GameMode(gameMode, plugin, dataFolder)) && !gameMode.equals("default")) {
+            if (!gameModes.contains(new GameMode(gameMode, plugin, dataFolder)) && !gameMode.equals("default"))
                 gameModes.add(new GameMode(gameMode, plugin, dataFolder));
-            }
         }
     }
 
@@ -371,18 +384,14 @@ public class MysticNavigator extends JavaPlugin {
      * @return GameMode
      */
     public GameMode getGameMode(String name) {
-        GameMode gameMode = null;
-
-        if (getGameModes().isEmpty()) {
+        if (getGameModes().isEmpty())
             return null;
-        }
 
         for (GameMode g : getGameModes()) {
-            if (g.getName().equalsIgnoreCase(name)) {
-                gameMode = g;
-            }
+            if (g.getName().equalsIgnoreCase(name))
+                return g;
         }
-        return gameMode;
+        return null;
     }
 
     /**

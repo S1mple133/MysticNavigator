@@ -10,7 +10,8 @@ public enum Permissions {
     MN_JOIN("mn.join"),
     MN_LEAVE("mn.leave"),
     MN_ARENAS("mn.arenas"),
-    MN_REMOVEARENA("mn.removearenas");
+    MN_REMOVEARENA("mn.removearenas"),
+    MN_BACKUP("mn.backup");
 
     private final String perm;
 
