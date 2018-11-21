@@ -91,50 +91,55 @@ public class MysticNavigator extends JavaPlugin {
      * Initialize all Game Modes
      */
     private void initializeGameModes() {
-        // Check if there are any GameModes
-        if ((getUtil().getGameModes() == null))
-            return;
 
-        // Initialize GameModes
-        for (String gameMode : getUtil().getGameModes()) {
-            GameMode gm = new GameMode(gameMode, plugin, dataFolder);
+        if(getConfig().getBoolean(getConfigFile().ENABLE_ARENAS)) {
+            // Check if there are any GameModes
+            if ((getUtil().getGameModes() == null))
+                return;
 
-            if (!gameModes.contains(gm) && !gameMode.equals("default"))
-                gameModes.add(gm);
+            // Initialize GameModes
+            for (String gameMode : getUtil().getGameModes()) {
+                GameMode gm = new GameMode(gameMode, plugin, dataFolder);
+
+                if (!gameModes.contains(gm) && !gameMode.equals("default"))
+                    gameModes.add(gm);
+            }
         }
 
-        // Initialize Arenas
-        if (!getUtil().getArenas().isEmpty()) {
-            for (String arenaName : getUtil().getArenas()) {
-                try {
-                    arenas.add(new Arena(plugin, arenaName, getArenaLocationFirst(arenaName), getArenaLocationSecond(arenaName)));
-                    getLogger().info("Arena " + arenaName + " has been loaded.");
-                } catch (IOException e) {
-                    getLogger().info(e.getMessage());
+        if(getConfig().getBoolean(getConfigFile().ENABLE_ARENAS)) {
+            // Initialize Arenas
+            if (!getUtil().getArenas().isEmpty()) {
+                for (String arenaName : getUtil().getArenas()) {
+                    try {
+                        arenas.add(new Arena(plugin, arenaName, getArenaLocationFirst(arenaName), getArenaLocationSecond(arenaName)));
+                        getLogger().info("Arena " + arenaName + " has been loaded.");
+                    } catch (IOException e) {
+                        getLogger().info(e.getMessage());
+                    }
                 }
-            }
-        } else {
-            getLogger().info("No arenas Found!");
+            } else {
+                getLogger().info("No arenas Found!");
 
 
-            String sql = "CREATE TABLE IF NOT EXISTS Arenas (\n"
-                    + "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
-                    + "	xFirst real,\n"
-                    + "	yFirst real,\n"
-                    + "	zFirst real,\n"
-                    + "	xSecond real,\n"
-                    + "	ySecond real,\n"
-                    + "	zSecond real,\n"
-                    + "name text, \n"
-                    + "resetTime int, \n"
-                    + "	world text"
-                    + ");";
+                String sql = "CREATE TABLE IF NOT EXISTS Arenas (\n"
+                        + "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                        + "	xFirst real,\n"
+                        + "	yFirst real,\n"
+                        + "	zFirst real,\n"
+                        + "	xSecond real,\n"
+                        + "	ySecond real,\n"
+                        + "	zSecond real,\n"
+                        + "name text, \n"
+                        + "resetTime int, \n"
+                        + "	world text"
+                        + ");";
 
-            try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
-                 Statement state = conn.createStatement()) {
-                state.execute(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
+                try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+                     Statement state = conn.createStatement()) {
+                    state.execute(sql);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -144,8 +149,13 @@ public class MysticNavigator extends JavaPlugin {
      * Initialize the CommandKits
      */
     private void initializeCommands() {
-        me.s1mple.CommandKits.MysticNavigator mn = new me.s1mple.CommandKits.MysticNavigator(plugin);
-        MysticNavigatorArena mna = new MysticNavigatorArena(plugin);
+        if(getConfig().getBoolean(getConfigFile().ENABLE_GAME_MODES)) {
+            me.s1mple.CommandKits.MysticNavigator mn = new me.s1mple.CommandKits.MysticNavigator(plugin);
+        }
+
+        if(getConfig().getBoolean(getConfigFile().ENABLE_ARENAS)) {
+            MysticNavigatorArena mna = new MysticNavigatorArena(plugin);
+        }
     }
 
     /**

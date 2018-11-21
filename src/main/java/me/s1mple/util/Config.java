@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class Config {
     final public String DEFAULT_LOCATION = "MysticNavigator.DefaultSpawnpoint";
     final public String GAME_MODES = "MysticNavigator.GameModes";
+    final public String ENABLE_GAME_MODES = "MysticNavigator.Options.GameModes";
+    final public String ENABLE_ARENAS = "MysticNavigator.Options.Arenas";
     final public String GAME_MODE_ARENAS = "MysticNavigator.GameModeArenas";
     final public String ARENAS_RESET_SCHEM_ALLOWUNDO = "MysticNavigator.ArenasResetSchem.AllowUndo";
     final private MysticNavigator plugin;
@@ -37,6 +39,8 @@ public class Config {
         config.addDefault(DEFAULT_LOCATION, new Location(plugin.getServer().getWorlds().get(0), 0, 0, 0));
         config.addDefault(GAME_MODES, new ArrayList<String>());
         config.addDefault(GAME_MODE_ARENAS, new ArrayList<String>());
+        config.addDefault(ENABLE_ARENAS, true);
+        config.addDefault(ENABLE_GAME_MODES, true);
         config.addDefault(ARENAS_RESET_SCHEM_ALLOWUNDO, false);
         config.options().copyDefaults(true);
         plugin.saveConfig();
