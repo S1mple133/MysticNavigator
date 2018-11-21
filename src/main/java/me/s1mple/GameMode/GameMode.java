@@ -106,18 +106,17 @@ public class GameMode {
      *
      * @param loc  Location of spawnpoint
      * @param name Name of spawnpoint
-     * @return Wether the spawnPoint has been saved or not.
      */
-    public boolean setSpawnPoint(Location loc, String name) {
+    public void setSpawnPoint(Location loc, String name) {
         String sql = "INSERT INTO " + getName() + "(world,x,y,z,name) VALUES(?,?,?,?,?)";
         String world = loc.getWorld().getName();
-        Double x = loc.getX();
-        Double y = loc.getY();
-        Double z = loc.getZ();
+        double x = loc.getX();
+        double y = loc.getY();
+        double z = loc.getZ();
 
         // Return false if spawnpoint exists
         if (hasSpawnPoint(loc)) {
-            return false;
+            return;
         }
 
         try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
@@ -130,9 +129,7 @@ public class GameMode {
             pstate.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return false;
         }
-        return true;
     }
 
     /**
@@ -148,9 +145,9 @@ public class GameMode {
                 + "z = ? "
                 + "WHERE name = ? ";
         String worldNew = locNew.getWorld().getName();
-        Double xNew = locNew.getX();
-        Double yNew = locNew.getY();
-        Double zNew = locNew.getZ();
+        double xNew = locNew.getX();
+        double yNew = locNew.getY();
+        double zNew = locNew.getZ();
 
         try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -313,10 +310,9 @@ public class GameMode {
                 plugin.getConfigFile().set(plugin.getConfigFile().GAME_MODES, gameModes); // Remove GameMode from config
             }
 
-            GameMode gameMode = plugin.getGameMode(getName());
-            gameMode = null; // Let Garbage Collector do the dirty job
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            this.finalize();
+        } catch (Throwable throwable) {
+            System.out.println(throwable.getMessage());
         }
     }
 

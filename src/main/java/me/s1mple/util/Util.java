@@ -11,7 +11,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.util.FileUtil;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Util {
@@ -38,7 +41,7 @@ public class Util {
      * @param dataFolder Data Folder of Plugin.
      * @return Path of database as string.
      */
-    public String getDbFileName(String dataFolder) {
+    private String getDbFileName(String dataFolder) {
         return "jdbc:sqlite:" + dataFolder + "\\database.db";
     }
 
@@ -60,11 +63,14 @@ public class Util {
     /**
      * Get a list of all gamemodes, GameMode default will be by default in the list.
      *
-     * @param dataFolder Data Folder of Plugin.
      * @return List<String> of all gamemodes
      */
-    public List<String> getGameModes(String dataFolder) {
-        return (List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES);
+    public List<String> getGameModes() {
+        return ((List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES)).isEmpty() ? new ArrayList<String>() : (List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES);
+    }
+
+    public List<String> getArenas() {
+        return ((List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODE_ARENAS)).isEmpty() ? new ArrayList<String>() : (List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODE_ARENAS);
     }
 
     /**
@@ -75,7 +81,7 @@ public class Util {
      * @return Weather if the GameMode has been resetted or not.
      */
     public boolean resetGameMode(String dataFolder, GameMode gameMode) {
-        for (String gameModeName : getGameModes(dataFolder)) {
+        for (String gameModeName : getGameModes()) {
             if (gameModeName.equals(gameMode.getName())) {
                 gameMode.delete();
                 GameMode gm = new GameMode(gameModeName, plugin, dataFolder);
@@ -89,20 +95,16 @@ public class Util {
      * Backup the data base file.
      *
      * @param dataFolder Data Folder of Plugin
-     * @return If the file has been copied.
      */
-    public boolean backupDatabase(String dataFolder) {
-        File dataBase = new File(getDbFileName(dataFolder));
-        File dataBackup = new File(getDbFileName(dataFolder + "_Backup" + System.currentTimeMillis()));
-
-        return FileUtil.copy(dataBackup, dataBase);
+    public void backupDatabase(String dataFolder) {
+        FileUtil.copy((new File(getDbFileName(dataFolder + "_Backup" + System.currentTimeMillis()))), (new File(getDbFileName(dataFolder))));
     }
 
     /**
-     * @return The Message that´s used in /help.
+     * @return The Message that´s used in /mn help.
      */
     public String getHelpMessage() {
-        return  ChatColor.DARK_BLUE + "----------------------------------------------\n" +
+        return ChatColor.DARK_BLUE + "----------------------------------------------\n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.AQUA + "<Argument> must exist. [Argument] is optional\n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Help : " + ChatColor.AQUA + " Display help message. \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Add <GameMode> : " + ChatColor.AQUA + " Create a new Game Mode. \n" +
@@ -114,7 +116,22 @@ public class Util {
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Join <GameMode> [Arena]: " + ChatColor.AQUA + " Teleport to the Default Spawn of <GameMode> or to " +
                 String.format("%80s", "<Arena> \n") +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Leave : " + ChatColor.AQUA + " Teleport yourself to the Hub \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Backup : " + ChatColor.AQUA + " Back the DataBase up. \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mn Arenas <GameMode> : " + ChatColor.AQUA + " List Arenas of <GameMode>\n" +
+                ChatColor.DARK_BLUE + "----------------------------------------------";
+    }
+
+    /**
+     * @return The Message that´s used in /mna help.
+     */
+    public String getHelpArenaMessage() {
+        return ChatColor.DARK_BLUE + "----------------------------------------------\n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.AQUA + "<Argument> must exist. [Argument] is optional\n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Help : " + ChatColor.AQUA + " Display help message. \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Create <Arena> : " + ChatColor.AQUA + " Create a new Arena (Select Arena with WorldEdit). \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Reset <Arena> : " + ChatColor.AQUA + " Reset an existing Arena. \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Remove <Arena> : " + ChatColor.AQUA + " Remove an Arena.  \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Arenas : " + ChatColor.AQUA + " List Arenas of <GameMode>\n" +
                 ChatColor.DARK_BLUE + "----------------------------------------------";
     }
 

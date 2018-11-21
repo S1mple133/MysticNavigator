@@ -1,7 +1,11 @@
 name: MysticNavigator
-version: 1.0
+version: 2.0
 main: me.s1mple.MysticNavigator
+depend: [WorldEdit, FastAsyncWorldEdit]
 commands:
     mn:
       description: Default command.
       aliases: [mysticnavigator, navi]
+    mna:
+      description: Default command for resetting arenas.
+      aliases: [mysticnavigatorarena, naviarena]
