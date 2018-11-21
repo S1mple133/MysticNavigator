@@ -330,7 +330,6 @@ public class MysticNavigator extends JavaPlugin {
      * @param name           Name of the Arena
      * @param locationFirst  Lowest Location of the arena
      * @param locationSecond Highest Location of the arena
-     * @throws IOException
      */
     public void createArena(String name, Location locationFirst, Location locationSecond) throws IOException {
         new Arena(plugin, name, locationFirst, locationSecond);

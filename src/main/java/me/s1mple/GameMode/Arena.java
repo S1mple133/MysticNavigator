@@ -75,8 +75,6 @@ public class Arena {
 
     /**
      * Reset Arena by pasting the Schematic
-     *
-     * @throws IOException
      */
     public void pasteSchem() throws IOException {
         File schemFile = new File(plugin.getDataFolder().toString() + "\\Schematic\\" + getName() + ".schematic");

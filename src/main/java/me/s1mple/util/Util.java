@@ -63,7 +63,7 @@ public class Util {
     /**
      * Get a list of all gamemodes, GameMode default will be by default in the list.
      *
-     * @return List<String> of all gamemodes
+     * @return StringList of all gamemodes
      */
     public List<String> getGameModes() {
         return ((List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES)).isEmpty() ? new ArrayList<String>() : (List<String>) plugin.getConfig().get(plugin.getConfigFile().GAME_MODES);
