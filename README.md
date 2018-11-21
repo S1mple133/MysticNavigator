@@ -6,12 +6,13 @@ Minecraft Hub Plugin
 
 This Plugin allows you to set some GameModes up. Every GameMode has its Arenas and players can choose which arena they want to be teleported to.
 
-### Dependencies
+## Dependencies
 
 MysticNavigator does not have any dependencies.
 
 ## Permissions and Commands
 
+### MysticNavigator
 ```
 <Argument> is a must. [Argument] is optional.
 /mn help : Display help
@@ -26,6 +27,7 @@ MysticNavigator does not have any dependencies.
 /mn Arenas <GameMode> : List Arenas of <GameMode> (mn.arenas)
 ```
 
+### MysticNavigatorArena
 ```
 <Argument> is a must. [Argument] is optional.
 /mna help : Display help
@@ -37,7 +39,7 @@ MysticNavigator does not have any dependencies.
 	
 ## How-To
 
-GameModes Setup:
+### GameModes Setup:
 ```
 1. Set the default spawn (Hub).
 2 Create a GameMode. (You can create more if you want, of course)
@@ -46,28 +48,26 @@ GameModes Setup:
 5 Lean back and relax. You are done.
 ```
 
-Arenas Setup:
+### Arenas Setup:
 ```
 1. Select a Region with WorldEdit
 2. Use /mna create <name>
 3. To Reset the arena do /mna reset <name>
 ```
 
-### Installing
+## Installing
 
 Latest stable build: https://github.com/S1mple133/MysticNavigator/releases
+
 ```
 Download the .jar file and put it in your server's "plugins" folder.
 ```
 
-### Arenas
+## Arenas
 An arena is a way of resetting places (Like a prison server, where the mines get reset)
 
-### Authors
 
-I am the only Author at the moment.
-
-### About Me
+## About Me
 
 Discord: S1mple#8051
 ```
@@ -81,6 +81,13 @@ plugin configurations and so on.
 
 If you're interested visit our website at http://turpster.xyz/wackster .
 
+## Contribuiting
+
+If you'd like to contribute to this project, make pull requests and report issues!
+
+The wackster team will happily accept and fix issues! 
+
+JavaDocs: https://s1mple133.github.io/MysticNavigator/
 
 ## Licence
 
