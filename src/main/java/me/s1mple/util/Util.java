@@ -5,12 +5,14 @@
  */
 package me.s1mple.util;
 
+import me.s1mple.GameMode.Arena;
 import me.s1mple.GameMode.GameMode;
 import me.s1mple.MysticNavigator;
 import org.bukkit.ChatColor;
 import org.bukkit.util.FileUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -131,6 +133,8 @@ public class Util {
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Create <Arena> : " + ChatColor.AQUA + " Create a new Arena (Select Arena with WorldEdit). \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Reset <Arena> : " + ChatColor.AQUA + " Reset an existing Arena. \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Remove <Arena> : " + ChatColor.AQUA + " Remove an Arena.  \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Scheduler <Arena> m:<Time in Mins> : " + ChatColor.AQUA + " Make an Arena reset automatically..  \n" +
+                ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Scheduler <Arena> h:<Time in Hours> : " + ChatColor.AQUA + " Make an Arena reset automatically..  \n" +
                 ChatColor.DARK_BLUE + " * " + ChatColor.BLUE + "/mna Arenas : " + ChatColor.AQUA + " List Arenas of <GameMode>\n" +
                 ChatColor.DARK_BLUE + "----------------------------------------------";
     }

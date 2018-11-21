@@ -143,10 +143,58 @@ public class MysticNavigatorArena implements CommandExecutor {
                 } else {
                     player.sendMessage(ChatColor.RED + "Unknown command. Do /mna help for help !");
                 }
-            } else {
+            }
+            else if(args.length==3) {
+
+                if (!Permissions.MNA_SCHEDULER.hasPerm(player) || !player.hasPermission("mna.*") || !player.hasPermission("*")) {
+                    player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
+                    return false;
+                }
+
+                // /mna scheduler <Arena> m: (or) h:<Time>
+                if(args[0].equalsIgnoreCase("scheduler")) {
+
+                    if(plugin.getArenasByName().contains(args[1])) {
+                        String[] splitTime;
+                        Arena arena = plugin.getArena(args[1]);
+
+                        if(args[2].contains("m:")) {
+                            splitTime = args[2].split(":");
+                            try {
+                                arena.scheduleResetArena(Integer.valueOf(splitTime[1]));
+                                player.sendMessage(ChatColor.GREEN + "Scheduler was successfully set up!");
+                            } catch(Exception ex) {
+                                player.sendMessage(ChatColor.RED + "Error! Do /mna help for help!");
+                            }
+                        }
+                        else if(args[2].contains("h:")) {
+                            splitTime = args[2].split(":");
+                            try {
+                                arena.scheduleResetArena(Integer.valueOf(splitTime[1])*60);
+                                player.sendMessage(ChatColor.GREEN + "Scheduler was successfully set up!");
+                            } catch(Exception ex) {
+                                player.sendMessage(ChatColor.RED + "Error! Do /mna help for help!");
+                            }
+                        }
+                        else {
+                            player.sendMessage(ChatColor.RED + "Minutes or Hours? Do /mna help");
+                        }
+                    }
+                    else {
+                        player.sendMessage(ChatColor.RED + "Arena not Found!");
+                    }
+                }
+                else {
+                    player.sendMessage(ChatColor.RED + "Unknown command. Do /mna help for help !");
+                }
+            }else
+                {
                 player.sendMessage(ChatColor.RED + "Unknown command. Do /mna help for help !");
             }
 
+        }
+        else {
+            sender.sendMessage("Command only for players!");
         }
         return false;
     }

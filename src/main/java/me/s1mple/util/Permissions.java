@@ -15,6 +15,7 @@ public enum Permissions {
     MNA_CREATE("mna.arenas.create"),
     MNA_RESET("mna.arenas.reset"),
     MNA_REMOVE("mna.arenas.remove"),
+    MNA_SCHEDULER("mna.arenas.scheduler"),
     MNA_ARENAS("mna.arenas.arenas");
 
     private final String perm;

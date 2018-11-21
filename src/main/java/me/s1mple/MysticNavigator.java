@@ -115,25 +115,27 @@ public class MysticNavigator extends JavaPlugin {
             }
         } else {
             getLogger().info("No arenas Found!");
-        }
 
-        String sql = "CREATE TABLE IF NOT EXISTS Arenas (\n"
-                + "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
-                + "	xFirst real,\n"
-                + "	yFirst real,\n"
-                + "	zFirst real,\n"
-                + "	xSecond real,\n"
-                + "	ySecond real,\n"
-                + "	zSecond real,\n"
-                + "name text, \n"
-                + "	world text"
-                + ");";
 
-        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
-             Statement state = conn.createStatement()) {
-            state.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            String sql = "CREATE TABLE IF NOT EXISTS Arenas (\n"
+                    + "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                    + "	xFirst real,\n"
+                    + "	yFirst real,\n"
+                    + "	zFirst real,\n"
+                    + "	xSecond real,\n"
+                    + "	ySecond real,\n"
+                    + "	zSecond real,\n"
+                    + "name text, \n"
+                    + "resetTime int, \n"
+                    + "	world text"
+                    + ");";
+
+            try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+                 Statement state = conn.createStatement()) {
+                state.execute(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }

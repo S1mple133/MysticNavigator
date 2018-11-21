@@ -32,6 +32,8 @@ MysticNavigator does not have any dependencies.
 /mna create <Arena> : Create a new Arena (Select it with WorldEdit) (mna.arenas.create)
 /mna remove <GameMode> : Remove an arena (mna.arenas.remove)
 /mna reset : Reset an Arena (mna.arenas.reset)
+/mna scheduler <Arena> m:<Time in mins> : Set an automatical reset for <Arena> every <Time>
+/mna scheduler <Arena> h:<Time in hours> : Set an automatical reset for <Arena> every <Time>
 /mna arenas : List all available Arenas (mna.arenas.arenas)
 ```
 	

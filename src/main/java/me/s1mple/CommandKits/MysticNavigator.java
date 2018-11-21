@@ -300,19 +300,9 @@ public class MysticNavigator implements CommandExecutor {
             }
 
             return true;
-        } else
-            try {
-                //Arena arena = new Arena(plugin, "Bending", new Location(plugin.getServer().getWorlds().get(0), (double) 78, (double) 80, (double) 77), new Location(plugin.getServer().getWorlds().get(0), (double) 80, (double) 80, (double) 999));
-                Arena arena = plugin.getArena("bending");
-                plugin.getLogger().info(arena.getName());
-                plugin.getLogger().info(plugin.getArenaLocationFirst(arena.getName()).toString());
-                plugin.getLogger().info(plugin.getArenaLocationSecond(arena.getName()).toString());
-                arena.pasteSchem();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        sender.sendMessage("Only players can use this command!");
+        } else {
+            sender.sendMessage("Only players can use this command!");
+        }
 
         return false;
     }

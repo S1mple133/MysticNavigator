@@ -269,7 +269,7 @@ public class GameMode {
     }
 
     /**
-     * @return name of the GameMode.
+     * @return Name of the GameMode.
      */
     public String getName() {
         return name.toLowerCase();
