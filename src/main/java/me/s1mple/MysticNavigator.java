@@ -6,49 +6,52 @@
 
 package me.s1mple;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import me.s1mple.CommandKits.MysticNavigatorArena;
+import me.s1mple.GameMode.Arena;
 import me.s1mple.GameMode.GameMode;
 import me.s1mple.util.Config;
-import me.s1mple.util.Permissions;
 import me.s1mple.util.Util;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MysticNavigator extends JavaPlugin {
     private String dataFolder;
-    private List<Location> locationList;
     private List<GameMode> gameModes;
+    private List<Arena> arenas;
     private MysticNavigator plugin;
     private Util util;
     private Config configFile;
+    private WorldEditPlugin worldEdit;
 
     /**
      * onEnable() method
      */
     @Override
     public void onEnable() {
-        this.locationList = new ArrayList<>();
+        List<Location> locationList = new ArrayList<>();
         this.dataFolder = getDataFolder().toString();
         this.plugin = this;
         this.util = new Util(plugin);
         this.gameModes = new ArrayList<>();
+        this.arenas = new ArrayList<>();
         this.configFile = new Config(plugin);
+        this.worldEdit = (WorldEditPlugin) plugin.getServer().getPluginManager().getPlugin("WorldEdit");
 
-        // Set the DataFolder up
         setupDataFolder();
 
         initializeGameModes();
-        // Initialize GameModes
-        initializeGameModes();
+
+        initializeCommands();
     }
 
     /**
@@ -56,275 +59,6 @@ public class MysticNavigator extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-    }
-
-    /**
-     * onCommand method
-     *
-     * @return if the command was successfully applied.
-     */
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        Player player;
-
-        if (!commandLabel.equalsIgnoreCase("mn") && !commandLabel.equalsIgnoreCase("navi") && !commandLabel.equalsIgnoreCase("mysticnavigator")) {
-            return false;
-        }
-
-        if (sender instanceof Player) {
-            player = (Player) sender;
-
-            // /mn
-            if (args.length == 0) {
-                player.sendMessage(getUtil().getHelpMessage());
-            } else if (args.length == 1) {
-                // /mn help
-                if (args[0].equalsIgnoreCase("help")) {
-                    player.sendMessage(getUtil().getHelpMessage());
-                }
-
-                // /mn setspawn
-                else if (args[0].equalsIgnoreCase("setspawn")) {
-                    //Check for permissions
-                    if (!Permissions.MN_SETSPAWN.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    getConfigFile().set(getConfigFile().DEFAULT_LOCATION, player.getLocation());
-                    player.sendMessage(ChatColor.GREEN + "Spawn was successfully set!");
-                }
-
-                // /mn backup
-                else if(args[0].equalsIgnoreCase("backup")) {
-
-                    //Check for permissions
-                    if(!Permissions.MN_BACKUP.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    try {
-                        getUtil().backupDatabase(dataFolder); //Back the database up
-                        player.sendMessage(ChatColor.GREEN + "Database was successfully backupped.");
-                    }
-                    catch(Exception ex) {
-                        player.sendMessage(ChatColor.RED + "Database was not backuped.");
-                    }
-                }
-
-                // /mn leave
-                else if (args[0].equalsIgnoreCase("leave")) {
-                    if (!Permissions.MN_LEAVE.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    player.teleport((Location) getConfig().get(getConfigFile().DEFAULT_LOCATION));
-                    player.sendMessage(ChatColor.GREEN + "Successfully left the GameMode!");
-                } else {
-                    player.sendMessage(ChatColor.RED + "Unknown command! Do /mn help for help.");
-                    return false;
-                }
-            } else if (args.length == 2) {
-
-                // /mn add <GameMode>
-                if (args[0].equalsIgnoreCase("add") && !args[1].isEmpty()) {
-                    //Check for permissions
-                    if (!Permissions.MN_ADD.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    if (gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "GameMode already exists");
-                        return false;
-                    }
-
-                    addGameMode(args[1]); // Create GameMode
-                    player.sendMessage(ChatColor.GREEN + "GameMode created successfully.");
-                }
-
-                // /mn remove <GameMode>
-                else if (args[0].equalsIgnoreCase("remove") && !args[1].isEmpty()) {
-                    //Check for permissions
-                    if (!Permissions.MN_REMOVE.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    removeGameMode(getGameMode(args[1])); // Remove GameMode
-                    player.sendMessage(ChatColor.GREEN + "GameMode successfully deleted!");
-                }
-
-
-                // /mn Join <Name of GameMode>
-                else if (args[0].equalsIgnoreCase("join") && !args[1].isEmpty()) {
-                    //Check for permissions
-                    if (!Permissions.MN_JOIN.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    try {
-                        player.teleport(getGameMode(args[1]).getSpawnPointLocation(1)); // Teleport player to GameMode, default arena
-                        player.sendMessage(ChatColor.GREEN + "Successfully joined " + args[1]);
-                    } catch (Exception ex) { // NullPointerexception no arenas
-                        player.sendMessage(ChatColor.RED + "GameMode does not have any arenas.");
-                        ex.printStackTrace();
-                        return false;
-                    }
-                }
-
-                // /mn Arenas <Name of GameMode>
-                else if (args[0].equalsIgnoreCase("arenas") && !args[1].isEmpty()) {
-                    GameMode gameMode;
-
-                    //Check for permissions
-                    if (!Permissions.MN_ARENAS.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    gameMode = getGameMode(args[1]);
-
-                    // Check if GameMode has any arenas
-                    if (gameMode.getSpawnPointsNames().isEmpty()) {
-                        player.sendMessage(ChatColor.RED + "GameMode has no Arenas.");
-                        return false;
-                    }
-
-                    player.sendMessage(ChatColor.GREEN + "Arenas of " + ChatColor.DARK_GREEN + args[1]);
-                    // List arenas
-                    for (String arena : gameMode.getSpawnPointsNames()) {
-                        player.sendMessage(ChatColor.DARK_GREEN + " * " + ChatColor.GREEN + arena);
-                    }
-
-
-                } else {
-                    player.sendMessage(ChatColor.RED + "Unknown command! Do /mn help for help.");
-                    return false;
-                }
-
-            } else if (args.length == 3) {
-
-
-                // /mn AddArena <Name of GameMode> <Name of Arena>
-                if (args[0].equalsIgnoreCase("addarena") && !args[1].isEmpty() && !args[2].isEmpty()) {
-                    //Check for permissions
-                    if (!Permissions.MN_ADDARENA.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    GameMode gameMode;
-                    Location location;
-                    String spawnPointName;
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    gameMode = getGameMode(args[1]);
-                    spawnPointName = args[2];
-
-                    if (gameMode.hasSpawnPoint(spawnPointName)) { // Check if SpawnPoint exists
-                        player.sendMessage(ChatColor.RED + "Arena already exists.");
-                        return false;
-                    }
-
-                    location = player.getLocation();
-                    gameMode.setSpawnPoint(location, spawnPointName); // Set a SpawnPoint
-                    player.sendMessage(ChatColor.GREEN + "Successfully added Arena.");
-
-                }
-
-                // /mn RemoveArena <Name of GameMode> <Name of Arena> :
-                else if (args[0].equalsIgnoreCase("removearena") && !args[1].isEmpty() && !args[2].isEmpty()) {
-                    //Check for permissions
-                    if (!Permissions.MN_REMOVEARENA.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    GameMode gameMode;
-                    String spawnPointName;
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    gameMode = getGameMode(args[1]);
-                    spawnPointName = args[2];
-
-                    if (!gameMode.hasSpawnPoint(spawnPointName)) { // Check if SpawnPoint exists
-                        player.sendMessage(ChatColor.RED + "Arena doesn´t exist.");
-                        return false;
-                    }
-
-                    gameMode.deleteSpawnPoint(spawnPointName); // Delete Spawn Point
-                    player.sendMessage(ChatColor.GREEN + "Successfully removed Arena.");
-                }
-
-                // /mn Join <Name of GameMode> [Name of Arena]
-                else if (args[0].equalsIgnoreCase("join") && !args[1].isEmpty() && !args[2].isEmpty()) {
-                    GameMode gameMode;
-                    String spawnPointName;
-
-                    //Check for permissions
-                    if (!Permissions.MN_JOIN.hasPerm(player) || !player.hasPermission("mn.*") || !player.hasPermission("*")) {
-                        player.sendMessage(ChatColor.RED + "You don't have permissions to use this command!");
-                        return false;
-                    }
-
-                    if (!gameModeExists(args[1])) { //Check if GameMode already exists
-                        player.sendMessage(ChatColor.RED + "Unknown GameMode.");
-                        return false;
-                    }
-
-                    gameMode = getGameMode(args[1]);
-                    spawnPointName = args[2];
-
-                    if (!gameMode.hasSpawnPoint(spawnPointName)) { // Check if SpawnPoint exists
-                        player.sendMessage(ChatColor.RED + "Arena doesn´t exist.");
-                        return false;
-                    }
-
-                    player.teleport(gameMode.getSpawnPointLocation(spawnPointName)); // Teleport Player to GameMode, Arena spawnPointName
-                    player.sendMessage(ChatColor.GREEN + "Successfully teleported!");
-
-                } else {
-                    player.sendMessage(ChatColor.RED + "Unknown command! Do /mn help for help.");
-                    return false;
-                }
-
-            } else {
-                player.sendMessage(ChatColor.RED + "Unknown command! Do /mn help for help.");
-                return false;
-            }
-
-            return true;
-        } else
-            sender.sendMessage("Only players can use this command!");
-
-        return false;
     }
 
 
@@ -341,7 +75,7 @@ public class MysticNavigator extends JavaPlugin {
      * @return Weather if a Game Mode exists or not.
      */
     public boolean existGameModes() {
-        return (getGameModes().isEmpty()) ? false : true;
+        return (getGameModes().isEmpty());
     }
 
     /**
@@ -356,16 +90,60 @@ public class MysticNavigator extends JavaPlugin {
     /**
      * Initialize all Game Modes
      */
-    public void initializeGameModes() {
+    private void initializeGameModes() {
         // Check if there are any GameModes
-        if ((getUtil().getGameModes(dataFolder) == null))
+        if ((getUtil().getGameModes() == null))
             return;
 
         // Initialize GameModes
-        for (String gameMode : getUtil().getGameModes(dataFolder)) {
-            if (!gameModes.contains(new GameMode(gameMode, plugin, dataFolder)) && !gameMode.equals("default"))
-                gameModes.add(new GameMode(gameMode, plugin, dataFolder));
+        for (String gameMode : getUtil().getGameModes()) {
+            GameMode gm = new GameMode(gameMode, plugin, dataFolder);
+
+            if (!gameModes.contains(gm) && !gameMode.equals("default"))
+                gameModes.add(gm);
         }
+
+        // Initialize Arenas
+        if (!getUtil().getArenas().isEmpty()) {
+            for (String arenaName : getUtil().getArenas()) {
+                try {
+                    arenas.add(new Arena(plugin, arenaName, getArenaLocationFirst(arenaName), getArenaLocationSecond(arenaName)));
+                    getLogger().info("Arena " + arenaName + " has been loaded.");
+                } catch (IOException e) {
+                    getLogger().info(e.getMessage());
+                }
+            }
+        } else {
+            getLogger().info("No arenas Found!");
+        }
+
+        String sql = "CREATE TABLE IF NOT EXISTS Arenas (\n"
+                + "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                + "	xFirst real,\n"
+                + "	yFirst real,\n"
+                + "	zFirst real,\n"
+                + "	xSecond real,\n"
+                + "	ySecond real,\n"
+                + "	zSecond real,\n"
+                + "name text, \n"
+                + "	world text"
+                + ");";
+
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder);
+             Statement state = conn.createStatement()) {
+            state.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Initialize the CommandKits
+     */
+    private void initializeCommands() {
+        me.s1mple.CommandKits.MysticNavigator mn = new me.s1mple.CommandKits.MysticNavigator(plugin);
+        MysticNavigatorArena mna = new MysticNavigatorArena(plugin);
     }
 
     /**
@@ -398,16 +176,14 @@ public class MysticNavigator extends JavaPlugin {
      * Remove a GameMode
      *
      * @param gameMode GameMode
-     * @return If the GameMode was successfully deleted.
      */
-    public boolean removeGameMode(GameMode gameMode) {
+    public void removeGameMode(GameMode gameMode) {
         try {
             gameMode.delete();
             gameModes.remove(gameMode);
-            return true;
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
-        return false;
     }
 
     /**
@@ -417,7 +193,7 @@ public class MysticNavigator extends JavaPlugin {
      * @return If the GameMode was successfully added.
      */
     public GameMode addGameMode(String name) {
-            return (gameModes.add(new GameMode(name, plugin, dataFolder))) ? (new GameMode(name, plugin, dataFolder)) : null;
+        return (gameModes.add(new GameMode(name, plugin, dataFolder))) ? (new GameMode(name, plugin, dataFolder)) : null;
     }
 
     /**
@@ -449,5 +225,128 @@ public class MysticNavigator extends JavaPlugin {
 
     }
 
+    /**
+     * Get First location of an Arena
+     *
+     * @param name Name of Arena.
+     * @return First Location of the Arena.
+     */
+    public Location getArenaLocationFirst(String name) {
+        Location loc = null;
+        String world;
+        double x;
+        double y;
+        double z;
+
+        String sql = "SELECT world, xFirst, yFirst, zFirst FROM Arenas WHERE name='" + name + "'";
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder)) {
+            ResultSet res = conn.createStatement().executeQuery(sql);
+
+            world = res.getString("world");
+            x = res.getDouble("xFirst");
+            y = res.getDouble("yFirst");
+            z = res.getDouble("zFirst");
+            res.close();
+
+            loc = new Location(plugin.getServer().getWorld(world), x, y, z);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return loc;
+    }
+
+    /**
+     * @param name Name of the Arena
+     * @return Seond Location of the arena.
+     */
+    public Location getArenaLocationSecond(String name) {
+        Location loc = null;
+        String world;
+        double x;
+        double y;
+        double z;
+
+        String sql = "SELECT world, xSecond, ySecond, zSecond FROM Arenas WHERE name='" + name + "'";
+        try (Connection conn = plugin.getUtil().getDatabase(dataFolder)) {
+            ResultSet res = conn.createStatement().executeQuery(sql);
+
+            world = res.getString("world");
+            x = res.getDouble("xSecond");
+            y = res.getDouble("ySecond");
+            z = res.getDouble("zSecond");
+            res.close();
+
+            loc = new Location(plugin.getServer().getWorld(world), x, y, z);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return loc;
+    }
+
+    /**
+     * @param name Name of the Arena you want to get.
+     * @return An Arena
+     */
+    public Arena getArena(String name) {
+        Arena arenaFound = null;
+
+        for (Arena arena : arenas) {
+            if (arena.getName().equalsIgnoreCase(name)) {
+                arenaFound = arena;
+            }
+        }
+
+        return arenaFound;
+    }
+
+    /**
+     * @return List of the Names of all arenas that exist
+     */
+    public List<String> getArenasByName() {
+        return plugin.getUtil().getArenas();
+    }
+
+    /**
+     * @return List of all Arenas that exist
+     */
+    public List<Arena> getArenas() {
+        return arenas;
+    }
+
+    /**
+     * @return Instance of the WorldEdit plugin.
+     */
+    public WorldEditPlugin getWorldEdit() {
+        return worldEdit;
+    }
+
+    /**
+     * Create a new Arena
+     *
+     * @param name           Name of the Arena
+     * @param locationFirst  Lowest Location of the arena
+     * @param locationSecond Highest Location of the arena
+     * @throws IOException
+     */
+    public void createArena(String name, Location locationFirst, Location locationSecond) throws IOException {
+        new Arena(plugin, name, locationFirst, locationSecond);
+        getUtil().getArenas();
+    }
+
+    /**
+     * Remove an Arena
+     *
+     * @param name Name of arena
+     * @return If arena was successfully removed
+     */
+    public boolean removeArena(String name) {
+        Arena arena = getArena(name);
+        arena.remove();
+        return arenas.remove(arena);
+    }
 
 }

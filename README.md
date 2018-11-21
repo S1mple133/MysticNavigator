@@ -15,18 +15,29 @@ MysticNavigator does not have any dependencies.
 ```
 <Argument> is a must. [Argument] is optional.
 /mn help : Display help
-/mn add <GameMode> : Create a new GameMode 
+/mn add <GameMode> : Create a new GameMode
 /mn remove <GameMode> : Remove a GameMode (mn.remove)
 /mn setspawn : Set the default spawn (Hub) (mn.setspawn)
 /mn addarena <GameMode> <Arena> : Set your location as an Arena of <GameMode> with the Name <Arena> (mn.addarena)
 /mn removearena <GameMode> <Arena> : Remove <Arena> from <GameMode> (mn.removearena)
 /mn join <GameMode> [Arena] : Teleport yourself to the First Arena (without 2nd Argument) or to <Arena> of <GameMode> (mn.join)
 /mn leave : Teleport yourself to the Hub (mn.leave)
+/mn backup : Back the database up. (mn.backup)
 /mn Arenas <GameMode> : List Arenas of <GameMode> (mn.arenas)
+```
+
+```
+<Argument> is a must. [Argument] is optional.
+/mna help : Display help
+/mna create <Arena> : Create a new Arena (Select it with WorldEdit) (mna.arenas.create)
+/mna remove <GameMode> : Remove an arena (mna.arenas.remove)
+/mna reset : Reset an Arena (mna.arenas.reset)
+/mna arenas : List all available Arenas (mna.arenas.arenas)
 ```
 	
 ## How-To
 
+GameModes Setup:
 ```
 1. Set the default spawn (Hub).
 2 Create a GameMode. (You can create more if you want, of course)
@@ -35,12 +46,22 @@ MysticNavigator does not have any dependencies.
 5 Lean back and relax. You are done.
 ```
 
+Arenas Setup:
+```
+1. Select a Region with WorldEdit
+2. Use /mna create <name>
+3. To Reset the arena do /mna reset <name>
+```
+
 ### Installing
 
 Latest stable build: https://github.com/gitmc15q/MysticNavigator/blob/master/target/MysticNavigator-1.0-SNAPSHOT.jar
 ```
 Download the .jar file and put it in your server's "plugins" folder.
 ```
+
+### Arenas
+An arena is a way of resetting places (Like a prison server, where the mines get reset)
 
 ### Authors
 

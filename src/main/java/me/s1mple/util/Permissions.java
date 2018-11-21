@@ -11,7 +11,11 @@ public enum Permissions {
     MN_LEAVE("mn.leave"),
     MN_ARENAS("mn.arenas"),
     MN_REMOVEARENA("mn.removearenas"),
-    MN_BACKUP("mn.backup");
+    MN_BACKUP("mn.backup"),
+    MNA_CREATE("mna.arenas.create"),
+    MNA_RESET("mna.arenas.reset"),
+    MNA_REMOVE("mna.arenas.remove"),
+    MNA_ARENAS("mna.arenas.arenas");
 
     private final String perm;
 
