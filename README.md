@@ -57,7 +57,7 @@ MysticNavigator does not have any dependencies.
 
 ## Installing
 
-Latest stable build: https://github.com/S1mple133/MysticNavigator/releases
+Latest stable build: [MysticNavigator](https://github.com/S1mple133/MysticNavigator/releases)
 
 ```
 Download the .jar file and put it in your server's "plugins" folder.
@@ -79,7 +79,7 @@ There you can find help if you are searching for self made plugins, hosting, hel
 plugin configurations and so on.
 ```
 
-If you're interested visit our website at http://turpster.xyz/wackster .
+If you're interested visit our website at [Wackster](http://turpster.xyz/wackster) .
 
 ## Contribuiting
 
@@ -87,9 +87,10 @@ If you'd like to contribute to this project, make pull requests and report issue
 
 The wackster team will happily accept and fix issues! 
 
-JavaDocs: https://s1mple133.github.io/MysticNavigator/
+JavaDocs: [JavaDocs](https://s1mple133.github.io/MysticNavigator/)
 
 ## Licence
 
+[MIT](https://github.com/S1mple133/MysticNavigator/blob/master/LICENSE)
 You are not allowed to share edited Versions of this code and / or compiled .jar Files.
 
