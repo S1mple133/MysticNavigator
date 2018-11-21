@@ -55,7 +55,7 @@ Arenas Setup:
 
 ### Installing
 
-Latest stable build: https://github.com/gitmc15q/MysticNavigator/blob/master/target/MysticNavigator-1.0-SNAPSHOT.jar
+Latest stable build: https://github.com/S1mple133/MysticNavigator/releases
 ```
 Download the .jar file and put it in your server's "plugins" folder.
 ```
