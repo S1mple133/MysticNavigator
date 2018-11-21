@@ -6,9 +6,17 @@ Minecraft Hub Plugin
 
 This Plugin allows you to set some GameModes up. Every GameMode has its Arenas and players can choose which arena they want to be teleported to.
 
+There is an other kind of Arenas. You can set those with the help of WorldEdit and make them reset automatically.
+
+With reset I mean put every single block back to where it was at the beginning when you set the arena up.
+
+Like a prison plugin which resets the mines.
+
 ## Dependencies
 
-MysticNavigator does not have any dependencies.
+[WorldEdit](https://dev.bukkit.org/projects/worldedit/files/2597538)
+
+[FastAsyncWorldEdit](http://empcraft.com/fawe/latest.php?bukkit)
 
 ## Permissions and Commands
 
