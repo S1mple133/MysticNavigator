@@ -1,7 +1,0 @@
-name: MysticNavigator
-version: 1.0
-main: me.s1mple.MysticNavigator
-commands:
-    mn:
-      description: Default command.
-      aliases: [mysticnavigator, navi]
