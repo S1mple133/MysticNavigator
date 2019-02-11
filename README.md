@@ -80,22 +80,12 @@ An arena is a way of resetting places (Like a prison server, where the mines get
 ## About Me
 
 Discord: S1mple#8051
-```
+
 If you need any self developed plugins I might be able to code them. PM me.
-
-Lately I joined a project named Wackster.    
-
-There you can find help if you are searching for self made plugins, hosting, help with your 
-plugin configurations and so on.
-```
-
-If you're interested visit our website at [Wackster](http://turpster.xyz/wackster) .
 
 ## Contribuiting
 
 If you'd like to contribute to this project, make pull requests and report issues!
-
-The wackster team will happily accept and fix issues! 
 
 JavaDocs: [JavaDocs](https://s1mple133.github.io/MysticNavigator/)
 
